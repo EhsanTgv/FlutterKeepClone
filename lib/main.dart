@@ -1,33 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
-}
+import 'models/user.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 
-class MyApp extends StatelessWidget {
+void main() => runApp(NotesApp());
+
+class NotesApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Keep Clone',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+  Widget build(BuildContext context) => StreamProvider.value(
+    initialData: CurrentUser.initial,
+    value: FirebaseAuth.instance.onAuthStateChanged.map((user) => CurrentUser.create(user)),
+    child: Consumer<CurrentUser>(
+      builder: (context, user, _) => MaterialApp(
+        title: 'Flutter Keep',
+        home: user.isInitialValue
+          ? Scaffold(body: const Text('Loading...'))
+          : user.data != null ? HomeScreen() : LoginScreen(),
       ),
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-    );
-  }
+    ),
+  );
 }
