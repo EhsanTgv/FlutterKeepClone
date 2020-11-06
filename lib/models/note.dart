@@ -37,7 +37,7 @@ enum NoteState {
 
 /// Transforms the query result into a list of notes.
 List<Note> toNotes(QuerySnapshot query) =>
-    query.documents.map((d) => toNote(d)).where((n) => n != null).toList();
+    query.docs.map((d) => toNote(d)).where((n) => n != null).toList();
 
 /// Transforms a document into a single note.
 Note toNote(DocumentSnapshot doc) => doc.exists
